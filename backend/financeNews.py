@@ -1298,7 +1298,6 @@ def generate_html(headlines):
     """
 
     return html_content
-
 def main():
     """Main function to run the financial news aggregator"""
     print("\n" + "="*70)
@@ -1312,11 +1311,10 @@ def main():
     # Fetch all news
     headlines = aggregator.fetch_all_news()
 
-  if headlines:
+    if headlines:
         # Generate HTML
         print("Generating HTML page...")
         html_content = generate_html(headlines)
-
         # Define the output directory and file
         output_dir = 'frontend'
         output_file_path = os.path.join(output_dir, 'index.html')
