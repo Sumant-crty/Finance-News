@@ -1311,42 +1311,32 @@ def main():
     # Fetch all news
     headlines = aggregator.fetch_all_news()
 
+from flask import Flask, send_from_directory
+import os
+
+financeNews = Flask(__name__)
+
+def generate_html(headlines):
+    # your existing HTML generation logic
+    return "<html>...</html>"
+
+@financeNews.route('/')
+def index():
+    headlines = get_headlines()   # however you collect them
     if headlines:
-        # Generate HTML
-        print("Generating HTML page...")
         html_content = generate_html(headlines)
 
-        # Define the output directory and file
+        # Save to frontend/index.html
         output_dir = 'frontend'
         output_file_path = os.path.join(output_dir, 'index.html')
-
-        # Create the output directory if it doesn't exist
         os.makedirs(output_dir, exist_ok=True)
-
-        # Save to file
         with open(output_file_path, 'w', encoding='utf-8') as f:
             f.write(html_content)
 
-        print(f"\n✓ Success! HTML file generated: {output_file_path}")
-        print(f"✓ Total unique headlines: {len(headlines)}")
-
-        # Show source breakdown
-        sources = {}
-        for headline in headlines:
-            source = headline['source']
-            sources[source] = sources.get(source, 0) + 1
-
-        print(f"\n📊 Headlines by Source:")
-        print("-" * 70)
-        for source, count in sorted(sources.items(), key=lambda x: x[1], reverse=True):
-            print(f"  {source}: {count} headlines")
-
-        print("\n" + "="*70)
-        print(" " * 8 + "💹 Open the HTML file to view market news!")
-        print("="*70 + "\n")
+        # Serve the file
+        return send_from_directory(output_dir, 'index.html')
     else:
-        print("\n✗ No headlines were collected. Please check your internet connection.")
-        print("  or the availability of financial news sources.\n")
+        return "<h2>No headlines were collected. Please check your internet connection.</h2>"
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    financeNews.run(host='0.0.0.0', port=5000)
