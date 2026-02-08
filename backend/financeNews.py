@@ -1348,18 +1348,16 @@ def main():
         print("  or the availability of financial news sources.\n")
 
     
-# ---------------- Flask Setup ----------------
-app = Flask(__name__)
+app = Flask(__name__, static_folder="frontend", static_url_path="")
 
-# Generate HTML immediately when the module is imported (so Render creates the file)
+# Generate HTML immediately when the module is imported
 main()
 
 @app.route("/")
 def serve_index():
-    return send_from_directory("frontend", "index.html")
-
+    return app.send_static_file("index.html")
 
 if __name__ == "__main__":
-    # Local development: run Flask directly
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
