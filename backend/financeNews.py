@@ -1311,19 +1311,19 @@ def main():
     # Fetch all news
     headlines = aggregator.fetch_all_news()
 
-     if headlines:
+    if headlines:
          # Generate HTML
         print("Generating HTML page...")
         html_content = generate_html(headlines)
         # Define the output directory and file
-         output_dir = 'frontend'
-         output_file_path = os.path.join(output_dir, 'index.html')
+        output_dir = 'frontend'
+        output_file_path = os.path.join(output_dir, 'index.html')
 
          # Create the output directory if it doesn't exist
-         os.makedirs(output_dir, exist_ok=True)
+        os.makedirs(output_dir, exist_ok=True)
 
         # Save to file
-         with open(output_file_path, 'w', encoding='utf-8') as f:
+        with open(output_file_path, 'w', encoding='utf-8') as f:
          f.write(html_content)
 
          print(f"\n✓ Success! HTML file generated: {output_file_path}")
@@ -1358,4 +1358,3 @@ if __name__ == "__main__":
     # Run Flask app on Render’s assigned port 
     port = int(os.environ.get("PORT", 5000)) 
     app.run(host="0.0.0.0", port=port)
-
