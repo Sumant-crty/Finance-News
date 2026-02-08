@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import time
+from flask import Flask, send_from_directory
 import os
 
 class FinancialNewsAggregator:
