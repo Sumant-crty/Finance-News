@@ -1346,16 +1346,17 @@ def main():
     else:
         print("\n✗ No headlines were collected. Please check your internet connection.")
         print("  or the availability of financial news sources.\n")
-if __name__ == "__main__":
+
     
 app = Flask(__name__)
 # Generate HTML file once at startup 
-main() 
+ 
 @app.route("/")
 def serve_index(): 
     # Serve the generated HTML file 
     return send_from_directory("frontend", "index.html")
-
-    # Run Flask app on Render’s assigned port 
-    port = int(os.environ.get("PORT", 5000)) 
-    app.run(host="0.0.0.0", port=port)
+if __name__ == "__main__":
+main()
+# Run Flask app on Render’s assigned port 
+port = int(os.environ.get("PORT", 5000)) 
+app.run(host="0.0.0.0", port=port)
