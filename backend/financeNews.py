@@ -1282,16 +1282,17 @@ def generate_html(headlines):
                 }
             };
 
-            // Auto-refresh indicator (optional - uncomment if you want auto-refresh)
-            /*
-            setInterval(() => {
-                const timestamp = document.querySelector('.timestamp');
-                timestamp.style.animation = 'pulse 1s ease';
-                setTimeout(() => {
-                    timestamp.style.animation = '';
-                }, 1000);
-            }, 60000); // Pulse every minute
-            */
+            
+            setInterval(() => { 
+                const now = new Date(); 
+                const hours = now.getHours(); 
+                const minutes = now.getMinutes(); 
+                // If it's exactly 7:00 AM, reload the page 
+                if (hours === 7 && minutes === 0) { 
+                location.reload();
+                } 
+            }, 60000);
+           
         </script>
     </body>
     </html>
@@ -1348,16 +1349,21 @@ def main():
         print("  or the availability of financial news sources.\n")
 
     
+# ---------------- Flask Setup ----------------
+# Tell Flask that "frontend" is the static folder
 app = Flask(__name__, static_folder="frontend", static_url_path="")
 
-# Generate HTML immediately when the module is imported
+# Generate HTML immediately when the module is imported (so Render creates the file)
 main()
 
 @app.route("/")
 def serve_index():
+    # Serve index.html from the static folder
     return app.send_static_file("index.html")
 
 if __name__ == "__main__":
+    # Local development: run Flask directly
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
 
