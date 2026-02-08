@@ -1347,9 +1347,10 @@ def main():
         print("\n✗ No headlines were collected. Please check your internet connection.")
         print("  or the availability of financial news sources.\n")
 if __name__ == "__main__":
-    # Generate HTML file once at startup 
-    main() 
+    
 app = Flask(__name__)
+# Generate HTML file once at startup 
+main() 
 @app.route("/")
 def serve_index(): 
     # Serve the generated HTML file 
