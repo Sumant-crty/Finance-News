@@ -1311,41 +1311,41 @@ def main():
     # Fetch all news
     headlines = aggregator.fetch_all_news()
 
-    if headlines:
-        # Generate HTML
-        print("Generating HTML page...")
-        html_content = generate_html(headlines)
-        # Define the output directory and file
-        output_dir = 'frontend'
-        output_file_path = os.path.join(output_dir, 'index.html')
+ if headlines:
+     # Generate HTML
+    print("Generating HTML page...")
+    html_content = generate_html(headlines)
+    # Define the output directory and file
+     output_dir = 'frontend'
+     output_file_path = os.path.join(output_dir, 'index.html')
 
-        # Create the output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
+     # Create the output directory if it doesn't exist
+     os.makedirs(output_dir, exist_ok=True)
 
-        # Save to file
-        with open(output_file_path, 'w', encoding='utf-8') as f:
-            f.write(html_content)
+    # Save to file
+     with open(output_file_path, 'w', encoding='utf-8') as f:
+     f.write(html_content)
 
-        print(f"\n✓ Success! HTML file generated: {output_file_path}")
-        print(f"✓ Total unique headlines: {len(headlines)}")
+     print(f"\n✓ Success! HTML file generated: {output_file_path}")
+     print(f"✓ Total unique headlines: {len(headlines)}")
 
-        # Show source breakdown
-        sources = {}
-        for headline in headlines:
-            source = headline['source']
-            sources[source] = sources.get(source, 0) + 1
+     # Show source breakdown
+     sources = {}
+     for headline in headlines:
+        source = headline['source']
+        sources[source] = sources.get(source, 0) + 1
 
         print(f"\n📊 Headlines by Source:")
         print("-" * 70)
-        for source, count in sorted(sources.items(), key=lambda x: x[1], reverse=True):
-            print(f"  {source}: {count} headlines")
+     for source, count in sorted(sources.items(), key=lambda x: x[1], reverse=True):
+        print(f"  {source}: {count} headlines")
 
         print("\n" + "="*70)
         print(" " * 8 + "💹 Open the HTML file to view market news!")
         print("="*70 + "\n")
-    else:
-        print("\n✗ No headlines were collected. Please check your internet connection.")
-        print("  or the availability of financial news sources.\n")
+else:
+    print("\n✗ No headlines were collected. Please check your internet connection.")
+    print("  or the availability of financial news sources.\n")
 
 app = Flask(__name__)
 @app.route("/")
