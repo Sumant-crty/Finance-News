@@ -1327,8 +1327,10 @@ def main():
         # Generate HTML
         print("Generating HTML page...")
         html_content = generate_html(headlines)
-        # Define the output directory and file
-        output_dir = 'frontend'
+        # Define the output directory and file, anchored to this script's
+        # location so the written file always matches Flask's static_folder
+        # regardless of the process's current working directory
+        output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend')
         output_file_path = os.path.join(output_dir, 'index.html')
 
         # Create the output directory if it doesn't exist
