@@ -1381,19 +1381,25 @@ LOADING_PAGE = """
 </html>
 """
 
-def _generate_news_safely():
-    try:
-        main()
-    except Exception:
-        print("✗ Background news generation failed:", file=sys.stderr)
-        traceback.print_exc()
+REFRESH_INTERVAL_SECONDS = 4 * 60 * 60  # re-scrape and regenerate every 4 hours
+
+def _generate_news_loop():
+    while True:
+        try:
+            main()
+        except Exception:
+            print("✗ Background news generation failed:", file=sys.stderr)
+            traceback.print_exc()
+        time.sleep(REFRESH_INTERVAL_SECONDS)
 
 # Generate the page in a background thread so the server can bind to the
 # port immediately (Render's health check would otherwise time out while
-# the full scrape of 30+ sources runs). Errors are caught and logged rather
-# than left to die silently in the thread, which would otherwise leave the
-# loading page showing forever with no visible cause.
-threading.Thread(target=_generate_news_safely, daemon=True).start()
+# the full scrape of 30+ sources runs), then keep repeating on a timer so
+# the dashboard stays current for as long as the process stays alive.
+# Errors are caught and logged per cycle rather than left to die silently,
+# which would otherwise leave the loading page (or stale news) showing
+# forever with no visible cause.
+threading.Thread(target=_generate_news_loop, daemon=True).start()
 
 @app.route("/")
 def serve_index():
