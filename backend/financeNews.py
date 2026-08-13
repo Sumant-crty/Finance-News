@@ -5,6 +5,17 @@ from datetime import datetime
 import time
 from flask import Flask, send_from_directory
 import os
+import sys
+import threading
+import traceback
+
+# Console output includes emoji; on Windows the console's default codepage
+# (cp1252) can't encode them and print() would raise. Force UTF-8 so local
+# `python financeNews.py` runs work the same as on Linux/Render.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
 
 class FinancialNewsAggregator:
     def __init__(self):
@@ -1353,12 +1364,40 @@ def main():
 # Tell Flask that "frontend" is the static folder
 app = Flask(__name__, static_folder="frontend", static_url_path="")
 
-# Generate HTML immediately when the module is imported (so Render creates the file)
-main()
+LOADING_PAGE = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="5">
+    <title>Financial News - Loading</title>
+</head>
+<body style="font-family: 'Segoe UI', sans-serif; text-align: center; padding-top: 100px;">
+    <h2>⏳ Generating latest financial news…</h2>
+    <p>This page refreshes automatically every 5 seconds.</p>
+</body>
+</html>
+"""
+
+def _generate_news_safely():
+    try:
+        main()
+    except Exception:
+        print("✗ Background news generation failed:", file=sys.stderr)
+        traceback.print_exc()
+
+# Generate the page in a background thread so the server can bind to the
+# port immediately (Render's health check would otherwise time out while
+# the full scrape of 30+ sources runs). Errors are caught and logged rather
+# than left to die silently in the thread, which would otherwise leave the
+# loading page showing forever with no visible cause.
+threading.Thread(target=_generate_news_safely, daemon=True).start()
 
 @app.route("/")
 def serve_index():
-    # Serve index.html from the static folder
+    index_path = os.path.join(app.static_folder, "index.html")
+    if not os.path.exists(index_path):
+        return LOADING_PAGE
     return app.send_static_file("index.html")
 
 if __name__ == "__main__":

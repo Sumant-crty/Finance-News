@@ -22,5 +22,7 @@ Then open http://localhost:5000.
 ## Deploy (e.g. Render)
 - Root directory: `backend`
 - Build command: `pip install -r requirements.txt`
-- Start command: `gunicorn financeNews:app`
-- The app regenerates `frontend/index.html` on startup, so no separate data pipeline is needed.
+- Start command: `gunicorn financeNews:app --bind 0.0.0.0:$PORT`
+- The app regenerates `frontend/index.html` in the background on startup, so no separate
+  data pipeline is needed. Until the first generation finishes, `/` serves a loading page
+  that auto-refreshes.
